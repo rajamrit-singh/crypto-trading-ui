@@ -1,0 +1,8 @@
+.coins-row:hover {
+    cursor: pointer;
+}
+.coin-icon {
+    width: 1rem;
+    height: 1rem;
+    margin-left: 0.5rem;
+}
