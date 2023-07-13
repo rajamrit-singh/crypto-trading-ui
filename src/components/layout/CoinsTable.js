@@ -1,11 +1,20 @@
 import React from 'react';
 import { Table, Button, Container } from 'react-bootstrap';
 import './CoinsTable.css';
+import { useNavigate } from 'react-router-dom';
+import { changeCurrentTabAndNavigateTo } from '../../utils/navigationUtils';
 
-const coinssTable = ({ coins }) => {
+const CoinsTable = ({ coins }) => {
+  const navigate = useNavigate();
   const handleRowClick = (coins) => {
     console.log('Clicked:', coins);
   };
+
+  const handleBuyCoin = (coin) => {
+    console.log(coin);
+    const newUrl = changeCurrentTabAndNavigateTo(`/buy/${coin.uuid}`)
+    navigate(newUrl);
+  }
 
   return (
     <Container>
@@ -23,7 +32,7 @@ const coinssTable = ({ coins }) => {
             <td>{coin.name}<img src={coin.iconUrl} alt={coin.name} className="coin-icon" /></td>
             <td>{`$${Number(coin.price).toFixed(2)}`}</td>
             <td>
-              <Button variant="primary">Buy</Button>
+              <Button variant="primary" onClick={handleBuyCoin.bind(this, coin)}>Buy</Button>
             </td>
           </tr>
         ))}
@@ -33,4 +42,4 @@ const coinssTable = ({ coins }) => {
   );
 };
 
-export default coinssTable;
+export default CoinsTable;
