@@ -2,13 +2,13 @@ import React from 'react';
 import { Navbar, Nav, Container } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { BsCoin } from 'react-icons/bs';
+import { changeCurrentTabAndNavigateTo } from '../../utils/navigationUtils';
 
 const UserNavbar = () => {
   const navigate = useNavigate();
 
   const goToTab = (routeName) => {
-    const currentUrl = window.location.pathname;
-    const newUrl = currentUrl.replace(/\/[^/]*$/, routeName);
+    const newUrl = changeCurrentTabAndNavigateTo(routeName);
     navigate(newUrl);
   };
 

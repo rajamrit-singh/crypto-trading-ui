@@ -31,6 +31,7 @@ const SignUpPage = () => {
         setLoading(false);
         console.log(user);
         dispatch(setUser(user));
+        localStorage.setItem('token', user.token);
         navigate(`/${user.user_id}/home`)
     };
 

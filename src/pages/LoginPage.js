@@ -28,9 +28,9 @@ const LoginPage = () => {
         setLoading(true);
         const user = await loginUser(formData);
         setLoading(false);
-        console.log(user);
         dispatch(setUser(user));
         navigate(`/${user.user_id}/home`);
+        localStorage.setItem('token', user.token);
     };
 
     return (
