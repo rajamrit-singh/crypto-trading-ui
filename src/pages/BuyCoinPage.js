@@ -1,4 +1,4 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import './BuyCoinPage.css';
 import { useNavigate } from 'react-router-dom';
@@ -10,8 +10,11 @@ import { getListOfCoins } from '../services/coinService';
 import { setCoins } from '../redux/reducers/coinSlice';
 import { getCoinIdFromUrl } from '../utils/navigationUtils';
 import { setCurrentCoin } from '../redux/reducers/currentCoinSlice';
+import CustomModal from '../components/common/CustomModal';
 
 const BuyCoinPage = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [message, setMessage] = useState('');
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -19,24 +22,35 @@ const BuyCoinPage = () => {
   console.log(coin);
   const [quantity, setQuantity] = useState(1);
   const price = Number(coin.price).toFixed(2); // Replace with the actual price
-
+  const totalAmount = quantity * price;
   const handleQuantityChange = (event) => {
     setQuantity(Number(event.target.value));
   };
 
   const handleBuyCoin = async () => {
-    const transaction = buyCoin(coin.uuid, quantity);
+    const transaction = await buyCoin(coin.uuid, quantity);
     const updatedProfileWithNewBalance = await getProfile();
-    dispatch(setUser(updatedProfileWithNewBalance));
+    if (transaction?.crypto_id) {
+      setMessage('Transaction Successful');
+      dispatch(setUser(updatedProfileWithNewBalance));
+    } else {
+      setMessage(transaction.response.data);
+    }
+    setShowModal(true);
   };
 
-  const totalAmount = quantity * price;
+  const handleModalClose = () => {
+    setShowModal(false);
+    if (message === 'Transaction Successful') {
+      navigate(`/${user.user_id}/transactions`)
+    }
+  }
 
   useEffect(() => {
     if (user.user_id === '') {
       getProfile().then((profile) => {
         dispatch(setUser(profile));
-      })
+      });
     }
     if (coin.uuid === '') {
       getListOfCoins().then((coins) => {
@@ -50,6 +64,7 @@ const BuyCoinPage = () => {
   }, [])
   return (
     <Container>
+      <CustomModal onClick={handleModalClose} show={showModal} message={message}/>
       <Row className="checkout-page">
         <Col md={6} className="form-column">
           <div className="checkout-card">
