@@ -8,6 +8,17 @@ export const buyCoin = async (crypto_id, quantity) => {
         });
         return response.data;
     } catch (error) {
-        console.log(error);
+        return error;
+    }
+}
+
+export const getTransactions = async (user_id) => {
+    try {
+        const response = await api.get('/transactions', {
+            user_id
+        });
+        return response.data;
+    } catch (error) {
+        return error;
     }
 }

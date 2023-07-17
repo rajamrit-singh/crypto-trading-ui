@@ -15,11 +15,9 @@ const UserHomePage = () => {
     // }
 
     useEffect(() => {
-        console.log('here');
         getListOfCoins().then((coins) => {
             dispatch(setCoins(coins));
             setCoinsAvailable(coins);
-            console.log(coins);
         });
     }, []);
 
