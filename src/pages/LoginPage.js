@@ -2,7 +2,7 @@ import { Button, Container } from 'react-bootstrap';
 import InputTextLabel from '../components/common/InputLabel';
 import Form from 'react-bootstrap/Form';
 import './LoginPage.css';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { loginUser } from '../services/userService';
 import { setUser } from '../redux/reducers/userSlice';
 import { useDispatch } from 'react-redux';
@@ -17,7 +17,6 @@ const LoginPage = () => {
         email: '',
         password: '',
     });
-
     const inputChangeHandler = (event) => {
         const { name, value } = event.target;
         setFormData((prevData) => ({ ...prevData, [name]: value }));
@@ -30,8 +29,16 @@ const LoginPage = () => {
         setLoading(false);
         dispatch(setUser(user));
         navigate(`/${user.user_id}/home`);
-        localStorage.setItem('token', user.token);
+        localStorage.setItem('user', JSON.stringify(user));
     };
+
+    useEffect(() => {
+        const user = localStorage.getItem('user');
+        if(user) {
+        const userObject = JSON.parse(user);
+        navigate(`/${userObject.user_id}/home`, { replace: true });
+      }
+    }, []);
 
     return (
         <Container>
