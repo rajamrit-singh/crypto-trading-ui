@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { buyCoin } from '../services/transactionService';
+import { sellCoin } from '../services/transactionService';
 import { getProfile } from '../services/userService';
 import { setUser } from '../redux/reducers/userSlice';
 import { getListOfCoins } from '../services/coinService';
@@ -11,18 +11,17 @@ import { setCurrentCoin } from '../redux/reducers/currentCoinSlice';
 import UserNavbar from '../components/layout/UserNavbar'
 import CoinTransactionLayout from '../components/layout/CoinTransactionLayout';
 
-const BuyCoinPage = () => {
+const SellCoinsPage = () => {
   const [message, setMessage] = useState('');
   const user = useSelector(state => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const coin = useSelector(state => state.currentCoin);
-  console.log(coin);
-  const price = Number(coin.price).toFixed(2); // Replace with the actual price
+  const price = Number(coin.price).toFixed(2) || 0; // Replace with the actual price
 
 
-  const handleBuyCoin = async (quantity) => {
-    const transaction = await buyCoin(coin.uuid, quantity);
+  const handleSellCoin = async (quantity) => {
+    const transaction = await sellCoin(coin.uuid, quantity);
     const updatedProfileWithNewBalance = await getProfile();
     if (transaction?.crypto_id) {
       setMessage('Transaction Successful');
@@ -54,13 +53,13 @@ const BuyCoinPage = () => {
     <UserNavbar />
     <CoinTransactionLayout
       price={price}
-      handleTransaction={handleBuyCoin}
+      handleTransaction={handleSellCoin}
       balance={user.balance}
-      isBuying={true}
+      isBuying={false}
       message={message}
     />
     </>
   );
 };
 
-export default BuyCoinPage;
+export default SellCoinsPage;

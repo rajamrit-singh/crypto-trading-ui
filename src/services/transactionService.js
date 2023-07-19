@@ -22,3 +22,15 @@ export const getTransactions = async (user_id) => {
         return error;
     }
 }
+
+export const sellCoin = async (crypto_id, quantity) => {
+    try {
+        const response = await api.post('/transaction/sell', {
+            crypto_id,
+            quantity
+        });
+        return response.data;
+    } catch (error) {
+        return error;
+    }
+}

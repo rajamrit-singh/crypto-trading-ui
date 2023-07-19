@@ -8,7 +8,7 @@ const transactionSlice = createSlice({
       state.push(action.payload);
     },
     addTransactions: (state, action) => {
-      state.push(...action.payload);
+      return action.payload;
     },
   },
 });

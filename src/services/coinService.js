@@ -8,3 +8,12 @@ export const getListOfCoins = async () => {
         console.error(error); // Handle the error
     }
 }
+
+export const getUserCoins = async () => {
+    try {
+        const response = await api.get('/mycoins');
+        return response.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
