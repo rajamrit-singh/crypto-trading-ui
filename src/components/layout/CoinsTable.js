@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { getCoinStats, getListOfCoins } from '../../services/coinService';
 import { setCoinStats } from '../../redux/reducers/coinStatsSlice';
 import PaginationComponent from '../common/Pagination';
+import { setIsLoading } from '../../redux/reducers/globalSlice';
 
 const CoinsTable = () => {
   const { userId, page } = useParams();
@@ -21,9 +22,9 @@ const CoinsTable = () => {
   };
 
   const handleBuyCoin = (coin) => {
-    const newUrl = changeCurrentTabAndNavigateTo(`/buy/${coin.uuid}`, { replace: true })
+    // const newUrl = changeCurrentTabAndNavigateTo(`/buy/${coin.uuid}`, { replace: true })
     dispatch(setCurrentCoin(coin));
-    navigate(newUrl);
+    navigate(`/${userId}/buy/${coin.uuid}`);
   }
 
   const updatePage = (page) => {
@@ -37,14 +38,16 @@ const CoinsTable = () => {
 
 
   useEffect(() => {
-
+    
     const updateStatsAndCoins = () => {
+      dispatch(setIsLoading(true));
       getCoinStats().then((stats) => {
         dispatch(setCoinStats(stats));
       })
       .then(() => {
         getListOfCoins(currentPage).then((coins) => {
           setCoins(coins);
+          dispatch(setIsLoading(false));
         });
       });
     }
