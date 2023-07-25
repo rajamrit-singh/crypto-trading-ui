@@ -1,24 +1,55 @@
-import React from 'react';
-import { Table, Button, Container } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { Table, Button, Container, Pagination } from 'react-bootstrap';
 import './CoinsTable.css';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { changeCurrentTabAndNavigateTo } from '../../utils/navigationUtils';
 import { setCurrentCoin } from '../../redux/reducers/currentCoinSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { getCoinStats, getListOfCoins } from '../../services/coinService';
+import { setCoinStats } from '../../redux/reducers/coinStatsSlice';
+import PaginationComponent from '../common/Pagination';
 
-const CoinsTable = ({ coins }) => {
+const CoinsTable = () => {
+  const { userId, page } = useParams();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [coins, setCoins] = useState([]);
+  const ITEMS_PER_PAGE = 50;
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const stats = useSelector(state => state.coinStats);
   const handleRowClick = (coins) => {
-    console.log('Clicked:', coins);
   };
 
   const handleBuyCoin = (coin) => {
-    console.log(coin);
-    const newUrl = changeCurrentTabAndNavigateTo(`/buy/${coin.uuid}`)
+    const newUrl = changeCurrentTabAndNavigateTo(`/buy/${coin.uuid}`, { replace: true })
     dispatch(setCurrentCoin(coin));
     navigate(newUrl);
   }
+
+  const updatePage = (page) => {
+    setCurrentPage(page);
+    navigate(`/${userId}/home/${page}`); // Update the URL with the new page number
+  }
+
+  if (page !== undefined && currentPage !== +page) {
+    updatePage(+page);
+  }
+
+
+  useEffect(() => {
+
+    const updateStatsAndCoins = () => {
+      getCoinStats().then((stats) => {
+        dispatch(setCoinStats(stats));
+      })
+      .then(() => {
+        getListOfCoins(currentPage).then((coins) => {
+          setCoins(coins);
+        });
+      });
+    }
+    updateStatsAndCoins();
+  }, [currentPage]);
 
   return (
     <Container>
@@ -42,6 +73,22 @@ const CoinsTable = ({ coins }) => {
           ))}
         </tbody>
       </Table>
+      {/* <Pagination>
+        {Array.from({ length: Math.ceil(stats?.totalCoins / ITEMS_PER_PAGE) }).map((_, index) => (
+          <Pagination.Item
+            key={index + 1}
+            active={index + 1 === ITEMS_PER_PAGE}
+            onClick={() => updateCoins(index + 1)}
+          >
+            {index + 1}
+          </Pagination.Item>
+        ))}
+      </Pagination> */}
+      <PaginationComponent
+        currentPage={currentPage}
+        stats={stats}
+        updatePage={updatePage}
+      />
     </Container>
   );
 };

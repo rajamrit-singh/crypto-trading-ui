@@ -4,6 +4,7 @@ import coinSlice from './reducers/coinSlice';
 import currentCoinSlice from './reducers/currentCoinSlice';
 import transactionsSlice from './reducers/transactionsSlice';
 import walletSlice from './reducers/walletSlice';
+import coinStatsSlice from './reducers/coinStatsSlice';
 
 const store = configureStore({
     reducer: {
@@ -11,7 +12,8 @@ const store = configureStore({
         crypto: coinSlice,
         currentCoin: currentCoinSlice,
         transactions: transactionsSlice,
-        wallet: walletSlice
+        wallet: walletSlice,
+        coinStats: coinStatsSlice
     }
 });
 
