@@ -1,14 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 import './CoinTransactionLayout.css';
-import { useNavigate } from 'react-router-dom';
-import { getUserIdFromUrl } from '../../utils/navigationUtils';
 import CustomModal from '../common/CustomModal';
 
-const CoinTransactionLayout = ({ price, handleTransaction, balance, isBuying, message }) => {
-    const [showModal, setShowModal] = useState(false);
+const CoinTransactionLayout = ({ price, showModal, balance, isBuying, message, handleTransaction, handleCloseTransaction }) => {
     const [quantity, setQuantity] = useState(1);
-    const navigate = useNavigate();
     const totalAmount = quantity * price;
     
     const handleQuantityChange = (event) => {
@@ -16,16 +12,11 @@ const CoinTransactionLayout = ({ price, handleTransaction, balance, isBuying, me
     };
 
     const handleModalClose = () => {
-        setShowModal(false);
-        const id = getUserIdFromUrl();
-        if (message === 'Transaction Successful') {
-            navigate(`/${id}/transactions`)
-        }
+        handleCloseTransaction();
     }
 
     const onBuyOrSellClickHandler = () => {
         handleTransaction(quantity);
-        setShowModal(true);
     }
 
     return (

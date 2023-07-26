@@ -32,3 +32,12 @@ export const getCoinStats = async () => {
         return error;
     }
 }
+
+export const getCoinById = async (coinId) => {
+    try {
+        const response = await api.get(`/coin/${coinId}`);
+        return response.data;
+    } catch (error) {
+        return error;
+    }
+}

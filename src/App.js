@@ -9,10 +9,13 @@ import TransactionsPage from './pages/TransactionsPage';
 import MyCoins from './pages/MyCoins';
 import SellCoinsPage from './pages/SellCoinsPage';
 import { useEffect } from 'react';
+import LoadingScreen from './components/common/LoadingScreen';
 
 function App() {
 
   return (
+    <>
+    <LoadingScreen />
     <Routes>
       <Route path="/" element={<HomePage />}/>
       <Route path="/signup" element={<SignUpPage />}/>
@@ -24,6 +27,7 @@ function App() {
       <Route path="/:userId/sell" element={<MyCoins />} />
       <Route path="/:userId/sell/:coinId" element={<SellCoinsPage />} />
     </Routes>
+    </>
   );
 
 }

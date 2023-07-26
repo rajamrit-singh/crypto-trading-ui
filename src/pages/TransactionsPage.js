@@ -8,21 +8,35 @@ import { getProfile } from '../services/userService';
 import { setUser } from '../redux/reducers/userSlice';
 import { getListOfCoins } from '../services/coinService';
 import { setCoins } from '../redux/reducers/coinSlice';
+import UserNavbar from '../components/layout/UserNavbar';
 
 const TransactionsPage = () => {
     const dispatch = useDispatch();
     const transactions = useSelector(state => state.transactions);
     const user = useSelector(state => state.user);
     const coins = useSelector(state => state.crypto);
-    
-    const calculateProfitLoss = (transaction) => {
-        const coin = coins.find((c) => c.uuid === transaction.crypto_id);
-        const diff = (coin.price - transaction.crypto_cost) * transaction.quantity;
-        return diff.toFixed(2);
-    };
 
     const handleSellCoin = (coin) => {
 
+    }
+
+    const getMyTransactions = () => {
+        const myTransactions =  transactions.map((transaction) => {
+            const currentCoin = coins.find((coin) => {
+                return coin.uuid === transaction.crypto_id;
+            });
+            if(!currentCoin) {
+                return null
+            }
+            console.log(transaction);
+            const coinName = currentCoin.name;
+            const profitLoss = ((currentCoin.price - transaction.crypto_cost) * transaction.quantity).toFixed(2);
+            const myTransaction = {...transaction, coinName, profitLoss};
+            return myTransaction;
+        });
+        console.log(myTransactions);
+        // return my
+        return myTransactions.filter(t => t !== null);
     }
 
     const refreshApiCall = async () => {
@@ -31,11 +45,15 @@ const TransactionsPage = () => {
             profile = await getProfile();
             dispatch(setUser(profile));
         }
+        const transactionList = await getTransactions(user.user_id || profile.user_id);
+        const uuids = transactionList.map((transaction) => {
+            return transaction.crypto_id
+        });
+        console.log(uuids);
         if (coins.length === 0) {
-            const listOfCoins = await getListOfCoins();
+            const listOfCoins = await getListOfCoins(1, 100, uuids);
             dispatch(setCoins(listOfCoins));
         }
-        const transactionList = await getTransactions(user.user_id || profile.user_id);
         dispatch(addTransactions(transactionList));
     }
 
@@ -44,6 +62,8 @@ const TransactionsPage = () => {
     }, [])
 
     return (
+        <>
+        <UserNavbar />
         <Container className="transactions-container">
             <h1>List of Transactions</h1>
             <div className="table-wrapper">
@@ -57,30 +77,25 @@ const TransactionsPage = () => {
                             <th>Date</th>
                             <th>Time</th>
                             <th>Profit/Loss</th>
-                            <th>Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {transactions.map((transaction) => (
+                        {coins.length && getMyTransactions().map((transaction) => (
                             <tr key={transaction.transaction_id} className='transaction-rows'>
-                                <td>{'bitcoin'}</td>
+                                <td>{transaction.coinName}</td>
                                 <td>{`${transaction.quantity} ${transaction.type === 'buy' ? '₹' : ''}`}</td>
                                 <td>{Number(transaction.total_amount).toFixed(2)}</td>
                                 <td>{transaction.transaction_type}</td>
                                 <td>{new Date(transaction.transaction_timestamp).toLocaleDateString()}</td>
                                 <td>{new Date(transaction.transaction_timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
-                                <td>{transaction.transaction_type === 'buy' && calculateProfitLoss(transaction)}</td>
-                                <td>
-                                    {transaction.transaction_type === 'buy' && (
-                                        <Button variant="primary" onClick={handleSellCoin.bind(this, transaction)}>Sell</Button>
-                                    )}
-                                </td>
+                                <td>{transaction.transaction_type === 'buy' && transaction.profitLoss}</td>
                             </tr>
                         ))}
                     </tbody>
                 </Table>
             </div>
         </Container>
+        </>
     );
 };
 

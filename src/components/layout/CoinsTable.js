@@ -76,17 +76,6 @@ const CoinsTable = () => {
           ))}
         </tbody>
       </Table>
-      {/* <Pagination>
-        {Array.from({ length: Math.ceil(stats?.totalCoins / ITEMS_PER_PAGE) }).map((_, index) => (
-          <Pagination.Item
-            key={index + 1}
-            active={index + 1 === ITEMS_PER_PAGE}
-            onClick={() => updateCoins(index + 1)}
-          >
-            {index + 1}
-          </Pagination.Item>
-        ))}
-      </Pagination> */}
       <PaginationComponent
         currentPage={currentPage}
         stats={stats}
