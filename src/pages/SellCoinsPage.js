@@ -26,6 +26,7 @@ const SellCoinsPage = () => {
   const handleSellCoin = async (quantity) => {
     const transaction = await sellCoin(coin.uuid, quantity);
     const updatedProfileWithNewBalance = await getProfile();
+    setShowModal(true);
     if (transaction?.crypto_id) {
       setMessage('Transaction Successful');
       dispatch(setUser(updatedProfileWithNewBalance));
@@ -35,7 +36,9 @@ const SellCoinsPage = () => {
   };
 
   const handleCloseTransaction = () => {
-
+    if (message === 'Transaction Successful') {
+      navigate(`/${userId}/transactions`)
+    }
   }
 
   useEffect(() => {

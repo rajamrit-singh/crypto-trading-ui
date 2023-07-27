@@ -80,7 +80,7 @@ const TransactionsPage = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {coins.length && getMyTransactions().map((transaction) => (
+                        {coins.length > 0 && getMyTransactions().map((transaction) => (
                             <tr key={transaction.transaction_id} className='transaction-rows'>
                                 <td>{transaction.coinName}</td>
                                 <td>{`${transaction.quantity} ${transaction.type === 'buy' ? '₹' : ''}`}</td>
@@ -88,7 +88,7 @@ const TransactionsPage = () => {
                                 <td>{transaction.transaction_type}</td>
                                 <td>{new Date(transaction.transaction_timestamp).toLocaleDateString()}</td>
                                 <td>{new Date(transaction.transaction_timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</td>
-                                <td>{transaction.transaction_type === 'buy' && transaction.profitLoss}</td>
+                                <td>{transaction.transaction_type === 'sell' && transaction.profitLoss}</td>
                             </tr>
                         ))}
                     </tbody>
