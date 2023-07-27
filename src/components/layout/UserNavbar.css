@@ -1,0 +1,33 @@
+/* UserNavbar.css */
+
+/* Hide the "hamburger-profile-option" on larger screens */
+@media (min-width: 992px) {
+    #hamburger-profile-option {
+        display: none;
+    }
+}
+
+.profile-icon {
+    cursor: pointer;
+}
+
+.dropdown-item {
+    color: #ffffff;
+}
+
+.dropdown-item:hover {
+    background-color: #212529;
+}
+
+.dropdown-item:active {
+    background-color: #212529;
+}
+
+.balance-amount {
+    color: #47ae5d;
+}
+
+#custom-container {
+    margin-right: 0;
+    margin-left: 15rem;
+}
