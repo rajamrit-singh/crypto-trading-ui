@@ -41,6 +41,11 @@ const LoginPage = () => {
     }, []);
 
     return (
+        <div className="signup-page">
+        <div className="background-image-container">
+            <img className="signup-image" src={require("../assets/signup-bg-image.jpg")}></img>
+        </div>
+        <div className="signup-form-container">
         <Container>
             {loading && <LoadingScreen />}
             <Form onSubmit={handleSubmit}>
@@ -51,6 +56,8 @@ const LoginPage = () => {
                 </Container>
             </Form>
         </Container>
+        </div>
+        </div>
     );
 };
 

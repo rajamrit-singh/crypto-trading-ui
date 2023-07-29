@@ -29,14 +29,18 @@ const SignUpPage = () => {
         setLoading(true);
         const user = await signUpUser(formData);
         setLoading(false);
-        console.log(user);
         dispatch(setUser(user));
         localStorage.setItem('token', user.token);
         navigate(`/${user.user_id}/home`)
     };
 
     return (
-        <Container >
+        <div className="signup-page">
+        <div className="background-image-container">
+            <img className="signup-image" src={require("../assets/signup-bg-image.jpg")}></img>
+        </div>
+        <div className="signup-form-container">
+            <Container >
             {loading && <LoadingScreen />}
             <Form onSubmit={handleSubmit}>
                 <InputTextLabel label="First Name" type="text" name="first_name" onChange={inputChangeHandler}></InputTextLabel>
@@ -50,6 +54,8 @@ const SignUpPage = () => {
             </Form>
 
         </Container>
+        </div>
+        </div>
     )
 }
 
